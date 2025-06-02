@@ -108,7 +108,7 @@ const cartSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Fetch cart items
+
       .addCase(fetchCartItems.pending, (state) => {
         console.log("Redux: Cart items fetch pending");
         state.loading = true;
@@ -126,7 +126,7 @@ const cartSlice = createSlice({
         console.log("Redux: Cart items fetch rejected:", action.payload);
         state.loading = false;
         state.error = action.payload as string;
-        state.items = []; // Ensure items is empty on error
+        state.items = [];
       })
 
       // Fetch cart summary
@@ -142,7 +142,6 @@ const cartSlice = createSlice({
       })
       .addCase(fetchCartSummary.rejected, (state, action) => {
         console.log("Redux: Cart summary fetch rejected:", action.payload);
-        // Don't set loading to false here as it might interfere with items loading
         state.summary = { subtotal: 0, total: 0 };
       })
 

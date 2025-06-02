@@ -6,7 +6,6 @@ const Header = () => {
   const location = useLocation();
   const cartItems = useAppSelector((state) => state.cart.items);
 
-  // Safe guard to ensure cartItems is always an array
   const safeCartItems = Array.isArray(cartItems) ? cartItems : [];
 
   const cartItemCount = safeCartItems.reduce(
@@ -17,12 +16,10 @@ const Header = () => {
   return (
     <header className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 border-b border-yellow-500/20 shadow-2xl">
       <div className="relative">
-        {/* Animated golden line */}
         <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-yellow-400 to-transparent animate-pulse"></div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
-            {/* Logo */}
             <div className="flex items-center space-x-3">
               <div className="flex items-center">
                 <Sparkles className="h-8 w-8 text-yellow-400 animate-pulse" />
@@ -35,7 +32,6 @@ const Header = () => {
               </span>
             </div>
 
-            {/* Navigation */}
             <div className="flex items-center space-x-4">
               <Link
                 to="/"

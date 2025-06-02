@@ -22,7 +22,6 @@ export interface CartItem {
   total: number;
 }
 
-// Processed cart item for UI display
 export interface ProcessedCartItem {
   id: number;
   name: string;
@@ -47,7 +46,6 @@ export interface CartState {
   error: string | null;
 }
 
-// API response structures
 export interface CartApiResponse {
   status: boolean;
   message: {
@@ -71,7 +69,6 @@ export interface CartSummaryApiResponse {
   };
 }
 
-// Cart action types from task requirements
 export type CartAction = "INCREMENT" | "DECREMENT" | "DELETE";
 
 export interface CartUpdateRequest {

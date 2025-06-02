@@ -7,13 +7,12 @@ import {
   CartItem,
 } from "../features/cart/cartTypes";
 
-// Helper function to process cart items for UI
 const processCartItem = (item: CartItem): ProcessedCartItem => {
   return {
-    id: item.bar.id, // Use bar.id as the main ID for cart operations
-    name: item.bar.name.en, // Use English name
+    id: item.bar.id,
+    name: item.bar.name.en,
     image: item.bar.image,
-    price: item.gold_price + item.making_charge, // Total price per item
+    price: item.gold_price + item.making_charge,
     quantity: item.quantity,
     total: item.total,
     weight: `${item.bar.bar_weight}g`,
@@ -34,16 +33,13 @@ export const getCartItems = async (): Promise<{
 
     console.log("Raw cart response:", response.data);
 
-    // Check if response has the expected structure
     if (!response.data || !response.data.status) {
       throw new Error("Invalid response format");
     }
 
-    // Extract items from the nested structure
     const items = response.data.Cart?.items || [];
     console.log("Extracted items:", items);
 
-    // Process items for UI
     const processedItems = items.map(processCartItem);
     console.log("Processed items:", processedItems);
 
@@ -62,7 +58,6 @@ export const getCartItems = async (): Promise<{
   }
 };
 
-// Get cart summary/prices
 export const getCartSummary = async (): Promise<{
   success: boolean;
   data: { subtotal: number; total: number };
@@ -82,14 +77,12 @@ export const getCartSummary = async (): Promise<{
     let subtotal = 0;
     let total = 0;
 
-    // If the response has Cart.items, calculate from items
     if (response.data.Cart?.items) {
       response.data.Cart.items.forEach((item: CartItem) => {
         subtotal += item.total;
         total += item.total;
       });
     } else if (response.data.data) {
-      // If response has direct data object
       subtotal = response.data.data.subtotal || 0;
       total = response.data.data.total || 0;
     }
@@ -112,7 +105,7 @@ export const getCartSummary = async (): Promise<{
   }
 };
 
-// Update cart (add/increment/decrement/delete)
+// Update cart
 export const updateCart = async (
   request: CartUpdateRequest
 ): Promise<{ success: boolean; message?: string }> => {

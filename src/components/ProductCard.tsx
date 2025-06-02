@@ -86,7 +86,6 @@ const ProductCard = ({ product }: ProductCardProps) => {
 
   return (
     <div className="group relative bg-gradient-to-br from-gray-800 to-gray-900 border border-yellow-400/20 rounded-xl overflow-hidden hover:scale-105 hover:shadow-xl hover:border-yellow-400/50 transition-all duration-300">
-      {/* Success overlay */}
       {justAdded && (
         <div className="absolute inset-0 bg-green-500/10 border-2 border-green-400/50 rounded-xl z-10 flex items-center justify-center">
           <div className="bg-green-500 rounded-full p-2 animate-bounce">
@@ -95,7 +94,6 @@ const ProductCard = ({ product }: ProductCardProps) => {
         </div>
       )}
 
-      {/* Image */}
       <div className="relative overflow-hidden">
         <img
           src={product.image}
@@ -106,13 +104,11 @@ const ProductCard = ({ product }: ProductCardProps) => {
           }}
         />
 
-        {/* Premium badge */}
         <div className="absolute top-2 right-2 bg-gradient-to-r from-yellow-400 to-yellow-500 text-black px-2 py-1 rounded-lg flex items-center gap-1">
           <Diamond className="w-3 h-3" />
           <span className="text-xs font-bold">PREMIUM</span>
         </div>
 
-        {/* Rating */}
         <div className="absolute bottom-2 left-2 bg-black/70 rounded-full px-2 py-1 flex items-center gap-1">
           {Array.from({ length: 5 }, (_, i) => (
             <Star
@@ -126,7 +122,6 @@ const ProductCard = ({ product }: ProductCardProps) => {
         </div>
       </div>
 
-      {/* Content */}
       <div className="p-4 space-y-3">
         <h3 className="text-sm font-bold text-yellow-400 line-clamp-2 group-hover:text-yellow-300 transition-colors">
           {product.name}
@@ -136,7 +131,6 @@ const ProductCard = ({ product }: ProductCardProps) => {
           {formatPrice(product.price)}
         </div>
 
-        {/* Success message */}
         {justAdded && (
           <div className="bg-green-900/20 border border-green-500/30 rounded-lg p-2 flex items-center gap-2">
             <CheckCircle className="w-4 h-4 text-green-400" />
@@ -146,7 +140,6 @@ const ProductCard = ({ product }: ProductCardProps) => {
           </div>
         )}
 
-        {/* Error message */}
         {error && (
           <div className="bg-red-900/20 border border-red-500/30 rounded-lg p-2">
             <div className="flex items-start gap-2">
@@ -167,7 +160,6 @@ const ProductCard = ({ product }: ProductCardProps) => {
           </div>
         )}
 
-        {/* Add to cart button */}
         <button
           onClick={handleAddToCart}
           disabled={isAdding}

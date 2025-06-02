@@ -41,7 +41,6 @@ const StorePage = () => {
     dispatch(fetchProducts());
   }, [dispatch]);
 
-  // Fixed: Only fetch if we don't have products and aren't loading/errored
   useEffect(() => {
     if (products.length === 0 && !loading && !error) {
       dispatch(fetchProducts());

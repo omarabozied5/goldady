@@ -9,7 +9,6 @@ const apiClient = axios.create({
   },
 });
 
-// Request interceptor
 apiClient.interceptors.request.use(
   (config) => {
     const token = getSessionToken();
@@ -36,7 +35,6 @@ apiClient.interceptors.request.use(
   }
 );
 
-// Response interceptor with error handling
 apiClient.interceptors.response.use(
   (response) => {
     return response;

@@ -12,9 +12,6 @@ export type ErrorType =
   | null
   | undefined;
 
-/**
- * Type guard to check if error is an internationalized error
- */
 const isInternationalizedError = (
   error: any
 ): error is InternationalizedError => {
@@ -34,11 +31,11 @@ const hasMessage = (error: any): error is { message: string } => {
 };
 
 /**
- * Extract displayable error message from various error formats
- * @param error - The error which could be a string, internationalized object, or null/undefined
- * @param locale - Preferred locale (defaults to 'en')
- * @param fallback - Fallback message if error cannot be parsed
- * @returns Displayable error message string
+
+ * @param error 
+ * @param locale 
+ * @param fallback 
+ * @returns 
  */
 export const getErrorMessage = (
   error: ErrorType,

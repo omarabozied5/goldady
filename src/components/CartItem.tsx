@@ -58,14 +58,11 @@ const CartItem = memo(({ item }: CartItemProps) => {
           </div>
         </div>
 
-        {/* Actions */}
         <div className="flex flex-col sm:items-end gap-3">
-          {/* Total Price */}
           <div className="text-xl font-bold text-yellow-400 text-center sm:text-right">
             {formatPrice(item.total)}
           </div>
 
-          {/* Quantity Controls */}
           <div className="flex items-center justify-center sm:justify-end gap-2">
             <button
               onClick={() => handleAction("DECREMENT")}
@@ -87,7 +84,6 @@ const CartItem = memo(({ item }: CartItemProps) => {
             </button>
           </div>
 
-          {/* Remove Button */}
           <button
             onClick={() => handleAction("DELETE")}
             className="flex items-center justify-center gap-1 px-3 py-1 text-sm text-red-400 border border-red-400/30 rounded hover:bg-red-400/10 transition-colors"
