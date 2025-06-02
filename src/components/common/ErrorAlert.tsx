@@ -1,4 +1,4 @@
-import { RefreshCw, AlertTriangle } from "lucide-react";
+import { RefreshCw, AlertTriangle, X } from "lucide-react";
 import { getErrorMessage } from "../../utils/errorUtils";
 
 interface ErrorAlertProps {
@@ -28,44 +28,53 @@ export const ErrorAlert = ({
     return "An unexpected error occurred";
   };
 
+  const canRetry = retryCount < MAX_RETRY_COUNT && !loading;
+
   return (
-    <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mb-6">
-      <div className="bg-red-900/20 border border-red-500/30 rounded-lg p-4">
-        <div className="flex justify-between items-start">
-          <div className="flex items-start space-x-3 flex-1">
-            <AlertTriangle className="h-5 w-5 text-red-400 flex-shrink-0 mt-0.5" />
-            <div className="flex-1">
-              <h3 className="text-red-400 font-semibold">
-                Failed to Load Products
-              </h3>
-              <p className="text-red-400/80 mt-1">{getErrorText(error)}</p>
-              {retryCount > 0 && (
-                <p className="text-red-400/60 text-sm mt-1">
-                  Retry attempts: {retryCount}/{MAX_RETRY_COUNT}
-                </p>
-              )}
-            </div>
-          </div>
-          <div className="flex space-x-2 ml-4">
-            <button
-              onClick={onRetry}
-              disabled={loading || retryCount >= MAX_RETRY_COUNT}
-              className="flex items-center space-x-1 px-3 py-1 bg-red-500/20 border border-red-500/30 rounded text-red-400 hover:bg-red-500/30 transition-colors disabled:opacity-50"
-            >
-              <RefreshCw
-                className={`h-4 w-4 ${loading ? "animate-spin" : ""}`}
-              />
-              <span>{loading ? "Retrying..." : "Retry"}</span>
-            </button>
-            <button
-              onClick={onDismiss}
-              className="px-3 py-1 text-red-400/80 hover:text-red-400 transition-colors"
-            >
-              Dismiss
-            </button>
-          </div>
+    <div className="bg-red-900/20 border border-red-500/30 rounded-lg p-4">
+      <div className="flex items-start gap-3">
+        <AlertTriangle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+
+        <div className="flex-1 min-w-0">
+          <h3 className="text-red-400 font-semibold mb-1">
+            Failed to Load Products
+          </h3>
+          <p className="text-red-400/80 text-sm mb-2 break-words">
+            {getErrorText(error)}
+          </p>
+          {retryCount > 0 && (
+            <p className="text-red-400/60 text-xs">
+              Retry attempts: {retryCount}/{MAX_RETRY_COUNT}
+            </p>
+          )}
         </div>
+
+        <button
+          onClick={onDismiss}
+          className="text-red-400/60 hover:text-red-400 p-1 rounded transition-colors"
+          aria-label="Dismiss error"
+        >
+          <X className="w-4 h-4" />
+        </button>
       </div>
-    </section>
+
+      <div className="flex flex-col sm:flex-row gap-2 mt-4">
+        {canRetry && (
+          <button
+            onClick={onRetry}
+            className="flex items-center justify-center gap-2 px-4 py-2 bg-red-500/20 border border-red-500/30 rounded text-red-400 hover:bg-red-500/30 transition-colors text-sm"
+          >
+            <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
+            <span>{loading ? "Retrying..." : "Retry"}</span>
+          </button>
+        )}
+
+        {!canRetry && retryCount >= MAX_RETRY_COUNT && (
+          <p className="text-red-400/60 text-sm">
+            Maximum retry attempts reached. Please refresh the page.
+          </p>
+        )}
+      </div>
+    </div>
   );
 };

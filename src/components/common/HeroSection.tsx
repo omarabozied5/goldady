@@ -12,7 +12,7 @@ export const HeroSection = () => {
       <div className="max-w-7xl mx-auto">
         <div className="text-center bg-gradient-to-r from-yellow-400/10 via-yellow-500/5 to-yellow-400/10 border border-yellow-400/20 rounded-3xl py-16 px-8 backdrop-blur-sm">
           <h1 className="text-4xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-400 bg-clip-text text-transparent animate-pulse">
-            GOLD VAULT COLLECTION
+            GOLDADY COLLECTION
           </h1>
           <p className="text-xl text-yellow-400/80 mb-8 italic">
             Premium Investment-Grade Precious Metals

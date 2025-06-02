@@ -7,22 +7,25 @@ interface EmptyStateProps {
 
 export const EmptyState = ({ onRefresh, loading }: EmptyStateProps) => {
   return (
-    <section className="text-center py-16">
-      <Diamond className="h-20 w-20 text-yellow-400/50 mx-auto mb-6" />
-      <h2 className="text-2xl font-bold text-yellow-400 mb-4">
+    <div className="text-center py-12 md:py-16">
+      <Diamond className="w-16 h-16 md:w-20 md:h-20 text-yellow-400/50 mx-auto mb-6" />
+
+      <h2 className="text-xl md:text-2xl font-bold text-yellow-400 mb-4">
         No Products Available
       </h2>
-      <p className="text-yellow-400/70 mb-8">
+
+      <p className="text-yellow-400/70 mb-6 md:mb-8 max-w-md mx-auto">
         Our vault is being restocked with premium pieces
       </p>
+
       <button
         onClick={onRefresh}
         disabled={loading}
-        className="flex items-center space-x-2 mx-auto px-6 py-3 border border-yellow-400/30 text-yellow-400 rounded-full hover:bg-yellow-400/10 hover:border-yellow-400 transition-all duration-300 disabled:opacity-50"
+        className="inline-flex items-center gap-2 px-6 py-3 border border-yellow-400/30 text-yellow-400 rounded-full hover:bg-yellow-400/10 hover:border-yellow-400 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
+        <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
         <span>{loading ? "Refreshing..." : "Refresh Collection"}</span>
       </button>
-    </section>
+    </div>
   );
 };

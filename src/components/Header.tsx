@@ -27,7 +27,7 @@ const Header = () => {
               <div className="flex items-center">
                 <Sparkles className="h-8 w-8 text-yellow-400 animate-pulse" />
                 <h1 className="ml-2 text-2xl font-bold bg-gradient-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent">
-                  GOLD VAULT
+                  GOLD ADY
                 </h1>
               </div>
               <span className="text-yellow-400/80 text-sm italic hidden sm:block">

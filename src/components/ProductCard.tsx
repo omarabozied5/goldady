@@ -29,6 +29,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
       .format(price)
       .replace("EGP", "EGP");
   };
+
   const handleAddToCart = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     e.stopPropagation();
@@ -38,21 +39,16 @@ const ProductCard = ({ product }: ProductCardProps) => {
     setJustAdded(false);
 
     try {
-      const payload = {
-        bar_id: product.id,
-        action: "INCREMENT" as const,
-      };
-
-      const result = await dispatch(updateCartItem(payload));
+      const result = await dispatch(
+        updateCartItem({
+          bar_id: product.id,
+          action: "INCREMENT" as const,
+        })
+      );
 
       if (updateCartItem.fulfilled.match(result)) {
-        // Success - show feedback
         setJustAdded(true);
-
-        // Clear success message after 2 seconds
-        setTimeout(() => {
-          setJustAdded(false);
-        }, 2000);
+        setTimeout(() => setJustAdded(false), 2000);
       } else if (updateCartItem.rejected.match(result)) {
         setError((result.payload as string) || "Failed to add to cart");
       }
@@ -65,43 +61,63 @@ const ProductCard = ({ product }: ProductCardProps) => {
     }
   };
 
-  return (
-    <div className="group relative bg-gradient-to-br from-gray-800 to-gray-900 border border-yellow-400/20 rounded-2xl overflow-hidden transform transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:shadow-yellow-400/20 hover:border-yellow-400/50">
-      {/* Hover glow effect */}
-      <div className="absolute inset-0 bg-gradient-to-br from-yellow-400/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+  const getButtonContent = () => {
+    if (justAdded) {
+      return (
+        <>
+          <CheckCircle className="w-4 h-4" />
+          <span>Added!</span>
+        </>
+      );
+    }
+    return (
+      <>
+        <ShoppingCart className="w-4 h-4" />
+        <span>{isAdding ? "Adding..." : "Add to Cart"}</span>
+      </>
+    );
+  };
 
-      {/* Success indicator */}
+  const getButtonStyles = () => {
+    if (isAdding) return "bg-gray-600 text-gray-400 cursor-not-allowed";
+    if (justAdded) return "bg-green-500 text-white";
+    return "bg-gradient-to-r from-yellow-400 to-yellow-500 text-black hover:from-yellow-500 hover:to-yellow-400 hover:shadow-lg transition-all";
+  };
+
+  return (
+    <div className="group relative bg-gradient-to-br from-gray-800 to-gray-900 border border-yellow-400/20 rounded-xl overflow-hidden hover:scale-105 hover:shadow-xl hover:border-yellow-400/50 transition-all duration-300">
+      {/* Success overlay */}
       {justAdded && (
-        <div className="absolute inset-0 bg-green-500/10 border-2 border-green-400/50 rounded-2xl z-10 flex items-center justify-center">
-          <div className="bg-green-500 rounded-full p-3 animate-bounce">
-            <CheckCircle className="h-6 w-6 text-white" />
+        <div className="absolute inset-0 bg-green-500/10 border-2 border-green-400/50 rounded-xl z-10 flex items-center justify-center">
+          <div className="bg-green-500 rounded-full p-2 animate-bounce">
+            <CheckCircle className="w-5 h-5 text-white" />
           </div>
         </div>
       )}
 
-      {/* Image container */}
+      {/* Image */}
       <div className="relative overflow-hidden">
         <img
           src={product.image}
           alt={product.name}
-          className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
+          className="w-full h-40 md:h-48 object-cover group-hover:scale-110 transition-transform duration-500"
           onError={(e) => {
             e.currentTarget.src = "/placeholder-image.jpg";
           }}
         />
 
         {/* Premium badge */}
-        <div className="absolute top-3 right-3 bg-gradient-to-r from-yellow-400 to-yellow-500 text-black px-2 py-1 rounded-lg flex items-center space-x-1">
-          <Diamond className="h-3 w-3" />
+        <div className="absolute top-2 right-2 bg-gradient-to-r from-yellow-400 to-yellow-500 text-black px-2 py-1 rounded-lg flex items-center gap-1">
+          <Diamond className="w-3 h-3" />
           <span className="text-xs font-bold">PREMIUM</span>
         </div>
 
         {/* Rating */}
-        <div className="absolute bottom-2 left-2 bg-black/70 rounded-full px-2 py-1 flex items-center space-x-1">
+        <div className="absolute bottom-2 left-2 bg-black/70 rounded-full px-2 py-1 flex items-center gap-1">
           {Array.from({ length: 5 }, (_, i) => (
             <Star
               key={i}
-              className={`h-3 w-3 ${
+              className={`w-3 h-3 ${
                 i < 4 ? "text-yellow-400 fill-current" : "text-yellow-400/30"
               }`}
             />
@@ -116,37 +132,37 @@ const ProductCard = ({ product }: ProductCardProps) => {
           {product.name}
         </h3>
 
-        <div className="flex items-center justify-between">
-          <div className="bg-gradient-to-r from-yellow-400 to-yellow-500 text-black px-3 py-1 rounded-full font-bold">
-            {formatPrice(product.price)}
-          </div>
+        <div className="bg-gradient-to-r from-yellow-200 to-yellow-300 text-black px-3 py-1 rounded-full font-bold text-center">
+          {formatPrice(product.price)}
         </div>
 
         {/* Success message */}
         {justAdded && (
-          <div className="bg-green-900/20 border border-green-500/30 rounded-lg p-2 flex items-center space-x-2">
-            <CheckCircle className="h-4 w-4 text-green-400 flex-shrink-0" />
+          <div className="bg-green-900/20 border border-green-500/30 rounded-lg p-2 flex items-center gap-2">
+            <CheckCircle className="w-4 h-4 text-green-400" />
             <p className="text-green-400 text-xs font-medium">
-              Added to cart successfully!
+              Added successfully!
             </p>
           </div>
         )}
 
         {/* Error message */}
         {error && (
-          <div className="bg-red-900/20 border border-red-500/30 rounded-lg p-2 flex items-start space-x-2">
-            <AlertCircle className="h-4 w-4 text-red-400 flex-shrink-0 mt-0.5" />
-            <div>
-              <p className="text-red-400 text-xs font-medium">
-                Failed to add to cart
-              </p>
-              <p className="text-red-400/80 text-xs mt-1">{error}</p>
-              <button
-                onClick={() => setError(null)}
-                className="text-red-400/60 hover:text-red-400 text-xs underline mt-1"
-              >
-                Dismiss
-              </button>
+          <div className="bg-red-900/20 border border-red-500/30 rounded-lg p-2">
+            <div className="flex items-start gap-2">
+              <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5" />
+              <div className="flex-1">
+                <p className="text-red-400 text-xs font-medium">
+                  Failed to add
+                </p>
+                <p className="text-red-400/80 text-xs">{error}</p>
+                <button
+                  onClick={() => setError(null)}
+                  className="text-red-400/60 hover:text-red-400 text-xs underline mt-1"
+                >
+                  Dismiss
+                </button>
+              </div>
             </div>
           </div>
         )}
@@ -155,29 +171,9 @@ const ProductCard = ({ product }: ProductCardProps) => {
         <button
           onClick={handleAddToCart}
           disabled={isAdding}
-          className={`
-            w-full py-3 rounded-xl font-bold flex items-center justify-center space-x-2 
-            transition-all duration-300 relative z-10
-            ${
-              isAdding
-                ? "bg-gray-600 text-gray-400 cursor-not-allowed"
-                : justAdded
-                ? "bg-green-500 text-white"
-                : "bg-gradient-to-r from-yellow-400 to-yellow-500 text-black cursor-pointer hover:from-yellow-500 hover:to-yellow-400 hover:shadow-lg hover:shadow-yellow-400/25 hover:-translate-y-1 active:translate-y-0"
-            }
-          `}
+          className={`w-full py-2.5 md:py-3 rounded-xl font-bold flex items-center justify-center gap-2 ${getButtonStyles()}`}
         >
-          {justAdded ? (
-            <>
-              <CheckCircle className="h-4 w-4" />
-              <span>Added to Cart!</span>
-            </>
-          ) : (
-            <>
-              <ShoppingCart className="h-4 w-4" />
-              <span>{isAdding ? "Adding..." : "Add to Cart"}</span>
-            </>
-          )}
+          {getButtonContent()}
         </button>
       </div>
     </div>
