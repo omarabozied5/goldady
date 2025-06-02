@@ -1,14 +1,15 @@
+import React, { useState } from "react";
 import {
   ShoppingCart,
   Star,
   Diamond,
-  AlertCircle,
   CheckCircle,
+  AlertCircle,
+  Tag,
 } from "lucide-react";
 import { useAppDispatch } from "../app/hooks";
 import { updateCartItem } from "../features/cart/cartSlice";
 import { Product } from "../features/products/productTypes";
-import { useState } from "react";
 
 interface ProductCardProps {
   product: Product;
@@ -20,68 +21,40 @@ const ProductCard = ({ product }: ProductCardProps) => {
   const [error, setError] = useState<string | null>(null);
   const [justAdded, setJustAdded] = useState(false);
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("en-US", {
+  const formatPrice = (price: number) =>
+    new Intl.NumberFormat("en-US", {
       style: "currency",
       currency: "EGP",
       minimumFractionDigits: 0,
     })
       .format(price)
       .replace("EGP", "EGP");
-  };
 
-  const handleAddToCart = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-
     setIsAdding(true);
     setError(null);
-    setJustAdded(false);
 
     try {
       const result = await dispatch(
         updateCartItem({
           bar_id: product.id,
-          action: "INCREMENT" as const,
+          action: "INCREMENT",
         })
       );
 
       if (updateCartItem.fulfilled.match(result)) {
         setJustAdded(true);
         setTimeout(() => setJustAdded(false), 2000);
-      } else if (updateCartItem.rejected.match(result)) {
+      } else {
         setError((result.payload as string) || "Failed to add to cart");
       }
-    } catch (error) {
-      setError(
-        error instanceof Error ? error.message : "Failed to add to cart"
-      );
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to add to cart");
     } finally {
       setIsAdding(false);
     }
-  };
-
-  const getButtonContent = () => {
-    if (justAdded) {
-      return (
-        <>
-          <CheckCircle className="w-4 h-4" />
-          <span>Added!</span>
-        </>
-      );
-    }
-    return (
-      <>
-        <ShoppingCart className="w-4 h-4" />
-        <span>{isAdding ? "Adding..." : "Add to Cart"}</span>
-      </>
-    );
-  };
-
-  const getButtonStyles = () => {
-    if (isAdding) return "bg-gray-600 text-gray-400 cursor-not-allowed";
-    if (justAdded) return "bg-green-500 text-white";
-    return "bg-gradient-to-r from-yellow-400 to-yellow-500 text-black hover:from-yellow-500 hover:to-yellow-400 hover:shadow-lg transition-all";
   };
 
   return (
@@ -99,9 +72,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
           src={product.image}
           alt={product.name}
           className="w-full h-40 md:h-48 object-cover group-hover:scale-110 transition-transform duration-500"
-          onError={(e) => {
-            e.currentTarget.src = "/placeholder-image.jpg";
-          }}
+          onError={(e) => (e.currentTarget.src = "/placeholder-image.jpg")}
         />
 
         <div className="absolute top-2 right-2 bg-gradient-to-r from-yellow-400 to-yellow-500 text-black px-2 py-1 rounded-lg flex items-center gap-1">
@@ -127,8 +98,22 @@ const ProductCard = ({ product }: ProductCardProps) => {
           {product.name}
         </h3>
 
-        <div className="bg-gradient-to-r from-yellow-200 to-yellow-300 text-black px-3 py-1 rounded-full font-bold text-center">
-          {formatPrice(product.price)}
+        <div className="space-y-2">
+          <div className="relative">
+            <div className="bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 text-black px-4 py-2 rounded-xl font-bold text-lg shadow-lg transform hover:scale-105 transition-transform">
+              {formatPrice(product.price)}
+            </div>
+            <div className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-300 rounded-full animate-pulse"></div>
+          </div>
+
+          <div className="flex items-center gap-2 text-xs">
+            <div className="bg-green-900/30 text-green-400 px-2 py-1 rounded-full border border-green-500/30">
+              ✓ Best Price
+            </div>
+            <div className="bg-blue-900/30 text-blue-400 px-2 py-1 rounded-full border border-blue-500/30">
+              Free Shipping
+            </div>
+          </div>
         </div>
 
         {justAdded && (
@@ -163,9 +148,25 @@ const ProductCard = ({ product }: ProductCardProps) => {
         <button
           onClick={handleAddToCart}
           disabled={isAdding}
-          className={`w-full py-2.5 md:py-3 rounded-xl font-bold flex items-center justify-center gap-2 ${getButtonStyles()}`}
+          className={`w-full py-2.5 md:py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition-all ${
+            isAdding
+              ? "bg-gray-600 text-gray-400 cursor-not-allowed"
+              : justAdded
+              ? "bg-green-500 text-white"
+              : "bg-gradient-to-r from-yellow-400 to-yellow-500 text-black hover:from-yellow-500 hover:to-yellow-400 hover:shadow-lg"
+          }`}
         >
-          {getButtonContent()}
+          {justAdded ? (
+            <>
+              <CheckCircle className="w-4 h-4" />
+              <span>Added!</span>
+            </>
+          ) : (
+            <>
+              <ShoppingCart className="w-4 h-4" />
+              <span>{isAdding ? "Adding..." : "Add to Cart"}</span>
+            </>
+          )}
         </button>
       </div>
     </div>
